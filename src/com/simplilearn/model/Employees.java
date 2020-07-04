@@ -11,7 +11,7 @@ public class Employees {
 	protected String dept;
 	
 	// zero arg constructor
-	Employees(){}
+	public Employees(){}
 	
 	// constructor with all feilds
 	public Employees(int id, String name, int age, String email, float salary, String dept) {

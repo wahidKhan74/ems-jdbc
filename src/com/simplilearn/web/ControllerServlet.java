@@ -19,6 +19,7 @@ import com.simplilearn.model.Employees;
  */
 @WebServlet("/")
 public class ControllerServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
 	private EmployeeDAO empDAO;
@@ -36,7 +37,10 @@ public class ControllerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		
 		String action = request.getServletPath();
+		
 		switch (action) {
 		case "/new":
 			showNewForm(request, response);
@@ -97,15 +101,55 @@ public class ControllerServlet extends HttpServlet {
 	}
 
 	private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) {
-
+		int id = Integer.parseInt(request.getParameter("id"));
+		Employees emp = new Employees();
+		emp.setId(id);
+		try {
+			empDAO.deleteEmployee(emp);
+			response.sendRedirect("list");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void showEditForm(HttpServletRequest request, HttpServletResponse response) {
-
+		int id = Integer.parseInt(request.getParameter("id"));
+		Employees emp;
+		try {
+			emp = empDAO.getOneEmployee(id);
+			RequestDispatcher dispatcher =   request.getRequestDispatcher("employee-form.jsp");
+			request.setAttribute("employee", emp);
+			dispatcher.forward(request, response);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ServletException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void updateEmployee(HttpServletRequest request, HttpServletResponse response) {
-
+		int id = Integer.parseInt(request.getParameter("id"));
+		String name = request.getParameter("name");
+		String email = request.getParameter("email");
+		int age = Integer.parseInt(request.getParameter("age"));
+		float salary = Float.parseFloat(request.getParameter("salary"));
+		String dept = request.getParameter("dept");
+		Employees emp = new Employees(id, name, age, email, salary, dept);
+		try {
+			empDAO.updateEmployee(emp);
+			response.sendRedirect("list");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void listEmployee(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
